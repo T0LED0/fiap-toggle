@@ -1,12 +1,12 @@
 # Tech Challenge - Fase 1: Plataforma "ToggleMaster"
 
-Bem-vindo à primeira fase do Tech Challenge do curso de DevOps! Neste projeto, construiremos uma plataforma de *Feature Flag as a Service* chamada **ToggleMaster**.
+Bem-vindo à primeira fase do Tech Challenge do curso de DevOps! Neste projeto, construiremos uma plataforma de _Feature Flag as a Service_ chamada **ToggleMaster**.
 
 ## 📖 Cenário
 
 A **DevOps Solutions Inc.** precisa de uma forma para que seus times de desenvolvimento possam lançar novas funcionalidades de forma segura e controlada. A solução é o **ToggleMaster**, uma plataforma interna que permitirá ativar ou desativar features em produção sem a necessidade de um novo deploy.
 
-Nesta primeira fase, nosso foco é criar e implantar o MVP (Produto Mínimo Viável) da plataforma, que consiste em uma API monolítica simples para gerenciar as *feature flags*.
+Nesta primeira fase, nosso foco é criar e implantar o MVP (Produto Mínimo Viável) da plataforma, que consiste em uma API monolítica simples para gerenciar as _feature flags_.
 
 ## 🎯 Objetivos da Fase 1
 
@@ -65,26 +65,32 @@ A forma recomendada é instalar o **Docker Desktop**, que é uma aplicação gr�
 Para facilitar o desenvolvimento, o projeto está configurado para rodar com Docker Compose. Ele irá subir a aplicação e um banco de dados PostgreSQL com um único comando.
 
 1.  **Clone o repositório:**
+
     ```bash
     git clone <url-do-seu-repositorio>
     ```
 
 2.  **Navegue até a pasta do projeto:**
+
     ```bash
     cd toggle-master-monolith
     ```
 
 3.  **Construa e inicie os contêineres:**
+
     ```bash
-    docker-compose up --build
+    docker-compose up -d --build
     ```
 
 4.  **Verifique se a aplicação está no ar:**
     Abra um novo terminal e execute o seguinte comando `curl`:
+
     ```bash
-    curl http://localhost:5000/health
+    curl http://localhost:${PORT-3000}/health
     ```
+
     Você deve receber a seguinte resposta:
+
     ```json
     {
       "status": "ok"
@@ -94,33 +100,35 @@ Para facilitar o desenvolvimento, o projeto está configurado para rodar com Doc
 5.  **Para encerrar a execução:**
     No terminal onde o `docker-compose` está rodando, pressione `Ctrl + C`. Em seguida, para garantir que os contêineres e a rede sejam removidos, execute:
     ```bash
-    docker-compose down
+    docker-compose down -v
     ```
 
 ### Endpoints da API
 
-Você pode usar o Postman ou `curl` para interagir com a API rodando localmente (`http://localhost:5000`) ou na sua instância EC2 (`http://<ip-publico-ec2>:5000`).
+Você pode usar o Postman ou `curl` para interagir com a API rodando localmente (`http://localhost:3000`) ou na sua instância EC2 (`http://<ip-publico-ec2>:3000`).
 
-| Método | Endpoint                    | Body (Exemplo)                           | Descrição                      |
-| :----- | :-------------------------- | :--------------------------------------- | :------------------------------- |
-| `POST` | `/flags`                    | `{"name": "new-feature", "is_enabled": true}` | Cria uma nova feature flag.      |
-| `GET`  | `/flags`                    | N/A                                      | Lista todas as flags existentes. |
-| `GET`  | `/flags/<nome-da-flag>`     | N/A                                      | Retorna o status de uma flag.    |
-| `PUT`  | `/flags/<nome-da-flag>`     | `{"is_enabled": false}`                  | Atualiza o status de uma flag.   |
+| Método | Endpoint                | Body (Exemplo)                                | Descrição                        |
+| :----- | :---------------------- | :-------------------------------------------- | :------------------------------- |
+| `POST` | `/flags`                | `{"name": "new-feature", "is_enabled": true}` | Cria uma nova feature flag.      |
+| `GET`  | `/flags`                | N/A                                           | Lista todas as flags existentes. |
+| `GET`  | `/flags/<nome-da-flag>` | N/A                                           | Retorna o status de uma flag.    |
+| `PUT`  | `/flags/<nome-da-flag>` | `{"is_enabled": false}`                       | Atualiza o status de uma flag.   |
 
 #### Exemplos com `curl`
 
 Abra seu terminal e utilize os comandos abaixo para interagir com a API.
 
 **1. Criar uma nova flag (`new-feature`)**
+
 ```bash
 curl -X POST \
   -H "Content-Type: application/json" \
   -d '{"name": "new-feature", "is_enabled": true}' \
-  http://localhost:5000/flags
+  http://localhost:${PORT-3000}/flags
 ```
 
-**Saída esperada:** 
+**Saída esperada:**
+
 ```bash
 {
   "message": "Flag 'new-feature' created successfully"
@@ -128,11 +136,13 @@ curl -X POST \
 ```
 
 **2. Listar todas as flags:**
+
 ```bash
-curl -X GET http://localhost:5000/flags
+curl -X GET http://localhost:${PORT-3000}/flags
 ```
 
-**Saída esperada:** 
+**Saída esperada:**
+
 ```bash
 [
   {
@@ -143,11 +153,13 @@ curl -X GET http://localhost:5000/flags
 ```
 
 **3. Consultar uma flag específica (`new-feature`):**
+
 ```bash
-curl -X GET http://localhost:5000/flags/new-feature
+curl -X GET http://localhost:3000/flags/new-feature
 ```
 
-**Saída esperada:** 
+**Saída esperada:**
+
 ```bash
 {
   "is_enabled": true,
@@ -156,14 +168,16 @@ curl -X GET http://localhost:5000/flags/new-feature
 ```
 
 **4. Atualizar uma flag (desativar a `new-feature`):**
+
 ```bash
 curl -X PUT \
   -H "Content-Type: application/json" \
   -d '{"is_enabled": false}' \
-  http://localhost:5000/flags/new-feature
+  http://localhost:${PORT-3000}/flags/new-feature
 ```
 
-**Saída esperada:** 
+**Saída esperada:**
+
 ```bash
 {
   "message": "Flag 'new-feature' updated"
@@ -186,25 +200,28 @@ Sua missão é pegar esta aplicação monolítica e implantá-la na AWS. O ambie
 
 Este guia assume que você já criou uma instância EC2 e um banco de dados RDS, e que consegue se conectar à sua EC2 via SSH.
 
-> **Importante:** Lembre-se de configurar o **Security Group** da sua instância EC2 para permitir tráfego de entrada na porta `5000` (para a aplicação) e na porta `22` (para o SSH). O Security Group do RDS deve permitir tráfego na porta `5432` vindo do Security Group da sua EC2.
+> **Importante:** Lembre-se de configurar o **Security Group** da sua instância EC2 para permitir tráfego de entrada na porta `3000` (para a aplicação) e na porta `22` (para o SSH). O Security Group do RDS deve permitir tráfego na porta `5432` vindo do Security Group da sua EC2.
 
 Escolha a opção correspondente ao sistema operacional da sua instância EC2.
 
 ### Opção A: Para Amazon Linux 2 ou Amazon Linux 2023
 
 1.  **Atualize o sistema e instale as ferramentas:**
+
     ```bash
     sudo yum update -y
     sudo yum install -y git python3 python3-pip
     ```
 
 2.  **Clone o repositório do seu projeto:**
+
     ```bash
-    git clone <url-do-seu-repositorio>
-    cd toggle-master-monolith
+    git clone https://github.com/T0LED0/fiap-toggle.git
+    cd fiap-toggle/app
     ```
 
 3.  **Crie e ative um ambiente virtual para o Python:**
+
     ```bash
     python3 -m venv venv
     source venv/bin/activate
@@ -219,18 +236,21 @@ Escolha a opção correspondente ao sistema operacional da sua instância EC2.
 ### Opção B: Para Ubuntu Server 20.04 / 22.04 LTS
 
 1.  **Atualize o sistema e instale as ferramentas:**
+
     ```bash
     sudo apt update && sudo apt upgrade -y
     sudo apt install -y git python3-pip python3-venv
     ```
 
 2.  **Clone o repositório do seu projeto:**
+
     ```bash
-    git clone <url-do-seu-repositorio>
-    cd toggle-master-monolith
+    git clone https://github.com/T0LED0/fiap-toggle.git
+    cd fiap-toggle/app
     ```
 
 3.  **Crie e ative um ambiente virtual para o Python:**
+
     ```bash
     python3 -m venv venv
     source venv/bin/activate
@@ -264,14 +284,14 @@ Após instalar as dependências, siga estes passos para configurar e rodar a apl
     Gunicorn é um servidor WSGI recomendado para produção. O comando `0.0.0.0` faz com que a aplicação escute em todas as interfaces de rede da EC2, tornando-a acessível publicamente.
 
     ```bash
-    gunicorn --bind 0.0.0.0:5000 app:app
+    gunicorn --bind 0.0.0.0:3000 app:app
     ```
 
 3.  **Verifique o acesso:**
-    A aplicação estará rodando. Agora você pode acessá-la usando o IP Público ou o DNS Público da sua instância EC2, seguido da porta `5000`.
-    Exemplo: `http://54.207.111.222:5000/health`
+    A aplicação estará rodando. Agora você pode acessá-la usando o IP Público ou o DNS Público da sua instância EC2, seguido da porta `3000`.
+    Exemplo: `http://54.207.111.222:3000/health`
 
-> **Nota:** O comando `gunicorn` acima executa a aplicação no *foreground*. Se você fechar sua sessão SSH, a aplicação irá parar. Em um ambiente de produção real, usaríamos um gerenciador de processos como `systemd` para rodar a aplicação como um serviço, mas para este desafio, rodar no foreground é suficiente.
+> **Nota:** O comando `gunicorn` acima executa a aplicação no _foreground_. Se você fechar sua sessão SSH, a aplicação irá parar. Em um ambiente de produção real, usaríamos um gerenciador de processos como `systemd` para rodar a aplicação como um serviço, mas para este desafio, rodar no foreground é suficiente.
 
 ---
 
@@ -296,7 +316,7 @@ Você deve entregar os seguintes itens:
 ## 💡 Dicas e Pontos de Atenção
 
 - **⚠️ SEGURANÇA:** Nunca, jamais, suba suas chaves de acesso da AWS para o seu repositório Git.
-- **💸 CUSTOS:** Fique atento aos recursos que você cria na AWS. Utilize o *AWS Academy* ou *Free Tier* sempre que possível e **lembre-se de desligar ou remover os recursos** após a avaliação do desafio.
+- **💸 CUSTOS:** Fique atento aos recursos que você cria na AWS. Utilize o _AWS Academy_ ou _Free Tier_ sempre que possível e **lembre-se de desligar ou remover os recursos** após a avaliação do desafio.
 - **📝 DOCUMENTAÇÃO:** Uma boa documentação é parte crucial da cultura DevOps. Descreva suas escolhas e justifique-as.
 
 Boa sorte!

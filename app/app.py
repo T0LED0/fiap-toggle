@@ -7,6 +7,7 @@ from psycopg2.extras import RealDictCursor
 app = Flask(__name__)
 
 DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
 DB_NAME = os.getenv("DB_NAME")
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
@@ -14,6 +15,7 @@ DB_PASSWORD = os.getenv("DB_PASSWORD")
 def get_db_connection():
     conn = psycopg2.connect(
         host=DB_HOST,
+        port=DB_PORT,
         database=DB_NAME,
         user=DB_USER,
         password=DB_PASSWORD
@@ -140,4 +142,4 @@ def update_flag(name):
     return jsonify({"message": f"Flag '{name}' atualizada"}), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=int(os.getenv("PORT", 3000)))

@@ -17,7 +17,7 @@ COPY app.py .
 
 RUN apt-get update && apt-get install -y postgresql-client
 
-EXPOSE 5000
+EXPOSE 3000
 
 ENTRYPOINT ["sh", "./entrypoint.sh"]
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:3000", "app:app"]

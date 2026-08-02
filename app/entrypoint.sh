@@ -31,4 +31,4 @@ flask init-db
 
 # Inicia a aplicação principal (Gunicorn)
 echo "Iniciando o servidor Gunicorn..."
-exec gunicorn --bind 0.0.0.0:5000 app:app
+exec gunicorn --bind 0.0.0.0:${PORT:-3000} app:app
