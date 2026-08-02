@@ -11,12 +11,14 @@ services:
       - DB_NAME=togglemaster
       - DB_USER=user
       - DB_PASSWORD=password
-      - DB_PORT=5432
+      - DB_PORT=${DB_PORT:-5432}
     depends_on:
       db:
         condition: service_healthy
   db:
     image: postgres:13
+    ports:
+      - "${DB_PORT:-5432}:5432"
     environment:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
