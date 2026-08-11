@@ -16,7 +16,7 @@ AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
 
 def get_db_connection():
     password = DB_PASSWORD
-    sslmode = "disable"
+    sslmode = "require"
     
     if USE_RDS_IAM:
         import boto3
