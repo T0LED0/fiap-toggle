@@ -22,7 +22,7 @@ def get_db_connection():
         import boto3
         client = boto3.client('rds', region_name=AWS_REGION)
         password = client.generate_db_auth_token(
-            DBHostName=DB_HOST,
+            DBHostname=DB_HOST,
             Port=int(DB_PORT or 5432),
             DBUsername=DB_USER,
             Region=AWS_REGION
