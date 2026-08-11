@@ -11,14 +11,31 @@ DB_PORT = os.getenv("DB_PORT")
 DB_NAME = os.getenv("DB_NAME")
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
+USE_RDS_IAM = os.getenv("USE_RDS_IAM", "false").lower() in ("true", "1", "yes")
+AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
 
 def get_db_connection():
+    password = DB_PASSWORD
+    sslmode = "disable"
+    
+    if USE_RDS_IAM:
+        import boto3
+        client = boto3.client('rds', region_name=AWS_REGION)
+        password = client.generate_db_auth_token(
+            DBHostName=DB_HOST,
+            Port=int(DB_PORT or 5432),
+            DBUsername=DB_USER,
+            Region=AWS_REGION
+        )
+        sslmode = "require"
+
     conn = psycopg2.connect(
         host=DB_HOST,
         port=DB_PORT,
         database=DB_NAME,
         user=DB_USER,
-        password=DB_PASSWORD
+        password=password,
+        sslmode=sslmode
     )
     return conn
 
