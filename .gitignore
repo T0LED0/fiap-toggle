@@ -1,0 +1,59 @@
+# Cache e pastas de inicialização
+.terraform/
+**/.terraform/
+.tofu/
+**/.tofu/
+.terragrunt-cache/
+**/.terragrunt-cache/
+
+# Arquivos de estado
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+*.tfstates
+*.tfstates.*
+*.tfstate.lock.*
+
+# Arquivos de planos, log e debug
+*.plan
+*.tfplan
+*.tfplan.zip
+tfplan
+tfplan.zip
+plan.txt
+crash.log
+crash.*.log
+terragrunt-debug.tfvars
+
+# Arquivos temporarios
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Arquivos sensiveis
+.tmp/
+**./.tmp/
+*.pem
+*.key
+*-key.json
+secret.tfvars
+*.tfvars
+*.tfvars.json
+*.auto-tfvars
+
+# direnv - arquivos de variaveis de ambiente
+.envrc
+**/.envrc
+**/secret
+**/secret/
+
+# Configurações de IDE, SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+__pycache__/
+*.py[cod]

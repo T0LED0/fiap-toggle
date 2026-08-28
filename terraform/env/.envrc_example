@@ -1,0 +1,7 @@
+# Terragrunt cache compartilhado
+ export TG_DOWNLOAD_DIR="${HOME}/.cache/terragrunt"
+
+# AWS Credentials
+# export AWS_ACCESS_KEY_ID="AKIA..."
+# export AWS_SECRET_ACCESS_KEY="[ENCRYPTION_KEY]..."
+# export AWS_DEFAULT_REGION="sa-east-1"
