@@ -8,13 +8,13 @@ Este documento apresenta a arquitetura de nuvem projetada na AWS, os detalhes de
 
 ### 👥 Informações do Projeto
 
-- **Integrantes do Grupo:**
-  - [Lúcio Alves Toledo] - RM [rm375870]
-  - [Beatriz da Silva Castro] - RM [XXXXXX]
-  - [Bruno Alexandre Manoel de Freitas] - RM [rm376273]
-  - [Kayky Santos da Cunha Couto] - RM [XXXXXX]
+- **Integrantes do Grupo 23:**
+  - [Lúcio Alves Toledo]
+  - [Beatriz da Silva Castro]
+  - [Bruno Alexandre Manoel de Freitas]
+  - [Kayky Santos da Cunha Couto]
 - **Link do Vídeo de Demonstração:** `[Inserir Link do Vídeo do YouTube/Vimeo/Drive]`
-- **Link do Diagrama Interativo:** `[Inserir Link do Miro/Diagrams.net]`
+- **Link do Diagrama Interativo:** [Viewer Diagrams](https://viewer.diagrams.net/?tags=%7B%7D&lightbox=1&highlight=0000ff&edit=_blank&layers=1&link-icons=1&tooltip-icons=1&nav=1&title=Arquitetura.drawio&dark=auto#Uhttps%3A%2F%2Fdrive.google.com%2Fuc%3Fid%3D14G3c3Efr9dKG1RzBxJWqmLDQFkPXByRo%26export%3Ddownload#%7B%22pageId%22%3A%22SBcSKzsiNTP2tSRxVtA5%22%7D)
 
 ---
 
@@ -24,7 +24,7 @@ Projetamos uma infraestrutura de baixo custo e alta segurança, ideal para a imp
 
 ### Diagrama de Arquitetura
 
-![Arquitetura ToggleMaster](./FIAP/Arquitetura.drawio.png)
+![Arquitetura ToggleMaster](./image/arquitetura.png)
 
 ---
 
