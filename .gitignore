@@ -41,6 +41,7 @@ secret.tfvars
 *.tfvars
 *.tfvars.json
 *.auto-tfvars
+*./tools/.api_env
 
 # direnv - arquivos de variaveis de ambiente
 .envrc
