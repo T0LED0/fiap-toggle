@@ -4,7 +4,7 @@ locals {
   az_secondary = "us-east-1b"
 
   common_tags = {
-    owner           = "grupo-2"
+    owner           = "grupo-23"
     tech-challenger = "fase-1"
     application     = "togglemaster"
   }
