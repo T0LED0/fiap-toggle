@@ -92,7 +92,7 @@ is_installed() {
 # Instalar dependências básicas (curl, unzip, wget)
 # ---------------------------------------------------------------------------
 install_base_deps() {
-  info "Verificando dependências básicas (curl, unzip, wget)..."
+  info "Verificando dependências básicas (curl, unzip, wget, jq)..."
 
   case "$OS" in
     macos)
@@ -100,11 +100,15 @@ install_base_deps() {
         warn "Homebrew não encontrado. Instalando..."
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
       fi
+      if ! is_installed jq; then
+        info "Instalando jq..."
+        brew install jq
+      fi
       ;;
     linux|wsl)
       detect_pkg_manager
       local missing_pkgs=()
-      for pkg in curl unzip wget; do
+      for pkg in curl unzip wget jq; do
         is_installed "$pkg" || missing_pkgs+=("$pkg")
       done
       if [[ ${#missing_pkgs[@]} -gt 0 ]]; then
@@ -123,6 +127,7 @@ install_base_deps() {
       # No Git Bash / WSL, assume que curl e unzip estão disponíveis
       is_installed curl   || error "curl não encontrado. Instale o Git for Windows ou use WSL2."
       is_installed unzip  || warn "unzip não encontrado. Pode ser necessário para algumas instalações."
+      is_installed jq     || warn "jq não encontrado. Recomendamos instalar o jq (ex: choco install jq) para formatar outputs JSON."
       ;;
   esac
 }

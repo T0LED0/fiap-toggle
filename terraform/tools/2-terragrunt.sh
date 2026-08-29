@@ -347,6 +347,23 @@ run_terragrunt() {
     terragrunt "${tg_args[@]}"
   )
 
+  if [[ "$COMMAND" == "apply" ]]; then
+    local ec2_dir="${ENV_DIR}/${ENVIRONMENT}/${STAGE}/ec2"
+    if [[ -d "$ec2_dir" ]]; then
+      local public_ip
+      public_ip=$(cd "$ec2_dir" && terragrunt output -raw public_ip 2>/dev/null || true)
+      if [[ -n "$public_ip" && "$public_ip" != *"No outputs found"* && "$public_ip" != *"Error"* ]]; then
+        echo "export TOGGLE_API_IP=\"${public_ip}\"" > "${SCRIPT_DIR}/.api_env"
+        echo ""
+        success "IP público capturado com sucesso: $public_ip"
+        info "Salvo em: ${SCRIPT_DIR}/.api_env"
+      else
+        echo ""
+        warn "Não foi possível capturar o IP público (output public_ip não encontrado)."
+      fi
+    fi
+  fi
+
   echo ""
   divider
   success "Comando '${COMMAND}' concluído com sucesso para ${ENVIRONMENT}/${STAGE}!"
