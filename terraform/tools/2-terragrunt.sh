@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # =============================================================================
-# 2-terragrunt.sh — Executor de comandos Terragrunt (plan / apply / destroy)
+# 2-terragrunt.sh
 # =============================================================================
-# Executa 'terragrunt run --all <comando>' no ambiente e módulo desejados,
-# carregando automaticamente as credenciais AWS do .envrc correspondente.
+# Executa 'terragrunt run --all <comando>' no ambiente e módulo desejados.
+# Carrega automaticamente as credenciais AWS do .envrc correspondente.
 #
 # Uso:
 #   ./2-terragrunt.sh [OPÇÕES]
@@ -11,14 +11,12 @@
 # Exemplos:
 #   ./2-terragrunt.sh                          # menu interativo
 #   ./2-terragrunt.sh -e fiap -s mvp -c plan   # plan no ambiente mvp
-#   ./2-terragrunt.sh -e fiap -s prd -c apply  # apply no ambiente prd
-#   ./2-terragrunt.sh -e fiap -s mvp -c destroy --auto-approve
 # =============================================================================
 
 set -euo pipefail
 
 # ---------------------------------------------------------------------------
-# Cores e helpers de output  (mesmo padrão do 1-prepare.sh)
+# Cores e helpers de output
 # ---------------------------------------------------------------------------
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'
 BLUE='\033[0;34m'; CYAN='\033[0;36m'; BOLD='\033[1m'; RESET='\033[0m'
@@ -33,7 +31,7 @@ header()  { echo -e "\n${BOLD}${BLUE}══════════════�
 divider() { echo -e "${CYAN}────────────────────────────────────────${RESET}"; }
 
 # ---------------------------------------------------------------------------
-# Diretórios base (calculados a partir da localização do script)
+# Diretórios base
 # ---------------------------------------------------------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TERRAFORM_DIR="${SCRIPT_DIR}/.."
@@ -212,7 +210,6 @@ _load_envrc_file() {
 
 # ---------------------------------------------------------------------------
 # Carregar credenciais do .envrc pai e do ambiente selecionado
-# Replica o comportamento do 'source_up_if_exists' do direnv
 # ---------------------------------------------------------------------------
 load_aws_credentials() {
   local parent_envrc="${ENV_DIR}/.envrc"
@@ -226,9 +223,7 @@ load_aws_credentials() {
 
   # 2. Carregar o .envrc do ambiente (AWS_*, DB_PASSWORD, etc.)
   if [[ ! -f "$envrc_file" ]]; then
-    warn "Arquivo de credenciais não encontrado: ${envrc_file}"
-    warn "Certifique-se de preencher o .envrc antes de executar."
-    return
+    error "Arquivo de credenciais não encontrado: ${envrc_file}\nCertifique-se de preencher o .envrc copiando o .envrc_example antes de executar."
   fi
 
   info "Carregando credenciais de: ${envrc_file}"
@@ -244,10 +239,10 @@ load_aws_credentials() {
 
   # Validações básicas
   if [[ -z "${AWS_ACCESS_KEY_ID:-}" ]]; then
-    warn "AWS_ACCESS_KEY_ID não definida em ${envrc_file}."
+    error "AWS_ACCESS_KEY_ID não definida em ${envrc_file}."
   fi
   if [[ -z "${AWS_SECRET_ACCESS_KEY:-}" ]]; then
-    warn "AWS_SECRET_ACCESS_KEY não definida em ${envrc_file}."
+    error "AWS_SECRET_ACCESS_KEY não definida em ${envrc_file}."
   fi
   if [[ -z "${AWS_DEFAULT_REGION:-}" ]]; then
     warn "AWS_DEFAULT_REGION não definida. Usando padrão: us-east-1"
@@ -263,10 +258,9 @@ load_aws_credentials() {
   local account_id
   account_id="$(aws sts get-caller-identity --query Account --output text 2>/dev/null)" \
     && success "Identidade AWS validada. Account ID: ${account_id}" \
-    || warn "Não foi possível validar as credenciais AWS. Verifique o .envrc."
+    || error "Não foi possível validar as credenciais AWS. Verifique as chaves fornecidas no seu .envrc."
 
   # Garantir que TG_DOWNLOAD_DIR é um caminho absoluto expandido
-  # (evita que ${HOME} literal corrumpa o cache do Terragrunt)
   if [[ -n "${TG_DOWNLOAD_DIR:-}" ]]; then
     TG_DOWNLOAD_DIR="$(eval echo "${TG_DOWNLOAD_DIR}")"
     export TG_DOWNLOAD_DIR
